@@ -1,6 +1,6 @@
 import click
 
-from flask import Flask
+from flask import Flask, redirect
 from flask.cli import FlaskGroup
 from flask_graphql import GraphQLView
 
@@ -16,6 +16,10 @@ def create_app():
     #     return Response(str(error), 401, {
     #         'WWWAuthenticate': 'Basic realm="Login Required"',
     #     })
+
+    @app.route('/')
+    def index():
+        return redirect('/graphql')
 
     app.add_url_rule(
         '/graphql',

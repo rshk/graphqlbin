@@ -1,3 +1,3 @@
-from .app import cli
+from graphqlbin.app import cli
 
 cli()
