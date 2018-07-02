@@ -14,3 +14,6 @@ flask-cors = "*"
 
 [requires]
 python_version = "3.6"
+
+[scripts]
+start = "pipenv run python -m graphqlbin run -p 5001 --debugger --reload"
