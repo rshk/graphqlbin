@@ -1,1 +1,1 @@
-web: gunicorn graphqlbin.wsgi:app
+web: gunicorn -k flask_sockets.worker graphqlbin.wsgi:app
