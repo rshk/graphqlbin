@@ -8,6 +8,7 @@ flask = "*"
 graphene = "*"
 flask-graphql = "*"
 gunicorn = "*"
+flask-cors = "*"
 
 [dev-packages]
 

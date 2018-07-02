@@ -2,6 +2,7 @@ import click
 
 from flask import Flask, redirect
 from flask.cli import FlaskGroup
+from flask_cors import CORS
 from flask_graphql import GraphQLView
 
 from .schema import schema
@@ -45,7 +46,7 @@ def create_app():
 
     #     raise Unauthorized('Bad username / password')
 
-    # CORS(app)
+    CORS(app)
 
     return app
 
