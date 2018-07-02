@@ -71,9 +71,10 @@ class Subscription(graphene.ObjectType):
     messages = graphene.Field(Message, channel=graphene.String())
 
     def resolve_messages(root, info, channel):
-        return (Observable
-                .interval(1000)
-                .map(lambda i: Message(text='Message #{}'.format(i))))
+        return (
+            Observable
+            .interval(1000)
+            .map(lambda i: Message(text='Message #{}'.format(i))))
 
 
 schema = graphene.Schema(

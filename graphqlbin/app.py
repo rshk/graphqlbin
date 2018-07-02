@@ -99,6 +99,11 @@ def setup_logging():
     logger.setLevel(logging.DEBUG)
     logger.debug('Debugging logger enabled')
 
+    # DEBUG log is way too verbose on this one
+    (logging
+     .getLogger('Rx')
+     .setLevel(logging.INFO))
+
 
 @cli.command(name='run')
 @click.option('--host', '-h', default='127.0.0.1')
