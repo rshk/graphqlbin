@@ -8,9 +8,13 @@ from flask.cli import FlaskGroup
 from flask_cors import CORS
 from flask_graphql import GraphQLView
 from flask_sockets import Sockets
+from gevent import monkey
 from graphql_ws.gevent import GeventSubscriptionServer
 
 from .schema import schema
+
+monkey.patch_all()
+
 
 logger = logging.getLogger(__name__)
 

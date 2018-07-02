@@ -4,9 +4,12 @@ import graphene
 from rx import Observable
 from werkzeug.exceptions import BadRequest, default_exceptions
 
+from .queue import get_watch_observable
+
 
 class Message(graphene.ObjectType):
     text = graphene.String()
+    channel = graphene.String()
 
 
 class Messages(graphene.ObjectType):
@@ -72,9 +75,11 @@ class Subscription(graphene.ObjectType):
 
     def resolve_messages(root, info, channel):
         return (
-            Observable
-            .interval(1000)
-            .map(lambda i: Message(text='Message #{}'.format(i))))
+            get_watch_observable(channel)
+            # Observable.interval(1000)
+
+            .map(lambda msg: Message(channel=msg['channel'], text=msg['text']))
+        )
 
 
 schema = graphene.Schema(
