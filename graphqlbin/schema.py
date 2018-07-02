@@ -4,7 +4,7 @@ import graphene
 from rx import Observable
 from werkzeug.exceptions import BadRequest, default_exceptions
 
-from .queue import get_watch_observable
+from .queue import get_watch_observable, send_message
 
 
 class Message(graphene.ObjectType):
@@ -42,8 +42,21 @@ class Query(graphene.ObjectType):
         return Messages(edges=[Message(text='Initial message')])
 
 
+class PostMessage(graphene.Mutation):
+
+    class Arguments:
+        channel = graphene.String(required=True)
+        text = graphene.String(required=True)
+
+    ok = graphene.Boolean()
+
+    def mutate(self, info, channel, text):
+        send_message(channel, text)
+        return PostMessage(ok=True)
+
+
 class Mutations(graphene.ObjectType):
-    pass
+    post_message = PostMessage.Field()
 
 
 class RandomType(graphene.ObjectType):
@@ -84,6 +97,5 @@ class Subscription(graphene.ObjectType):
 
 schema = graphene.Schema(
     query=Query,
-    # mutation=Mutations,
-    subscription=Subscription,
-)
+    mutation=Mutations,
+    subscription=Subscription)
