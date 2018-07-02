@@ -9,6 +9,10 @@ graphene = "*"
 flask-graphql = "*"
 gunicorn = "*"
 flask-cors = "*"
+flask-sockets = "*"
+graphql-ws = "*"
+rx = "*"
+nicelog = "*"
 
 [dev-packages]
 

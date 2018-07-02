@@ -1,5 +1,16 @@
+import random
+
 import graphene
-from werkzeug.exceptions import default_exceptions, BadRequest
+from rx import Observable
+from werkzeug.exceptions import BadRequest, default_exceptions
+
+
+class Message(graphene.ObjectType):
+    text = graphene.String()
+
+
+class Messages(graphene.ObjectType):
+    edges = graphene.List(Message)
 
 
 class Query(graphene.ObjectType):
@@ -22,9 +33,51 @@ class Query(graphene.ObjectType):
             raise BadRequest('Unsupported error code {}'.format(code))
         raise default_exceptions[code]
 
+    messages = graphene.Field(Messages, channel=graphene.String())
+
+    def resolve_messages(self, info, channel):
+        return Messages(edges=[Message(text='Initial message')])
+
 
 class Mutations(graphene.ObjectType):
     pass
 
 
-schema = graphene.Schema(query=Query)  # , mutation=Mutations
+class RandomType(graphene.ObjectType):
+    seconds = graphene.Int()
+    random_int = graphene.Int()
+
+
+class Subscription(graphene.ObjectType):
+
+    count_seconds = graphene.Int(up_to=graphene.Int())
+
+    def resolve_count_seconds(root, info, up_to=5):
+        return (
+            Observable
+            .interval(1000)
+            .map(lambda i: "{0}".format(i))
+            .take_while(lambda i: int(i) <= up_to))
+
+    random_int = graphene.Field(RandomType)
+
+    def resolve_random_int(root, info):
+        return (
+            Observable
+            .interval(1000)
+            .map(lambda i:
+                 RandomType(seconds=i, random_int=random.randint(0, 500))))
+
+    messages = graphene.Field(Message, channel=graphene.String())
+
+    def resolve_messages(root, info, channel):
+        return (Observable
+                .interval(1000)
+                .map(lambda i: Message(text='Message #{}'.format(i))))
+
+
+schema = graphene.Schema(
+    query=Query,
+    # mutation=Mutations,
+    subscription=Subscription,
+)
